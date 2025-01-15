@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matrix Screensaver</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: black;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="matrix"></canvas>
+
+    <script>
+      const canvas = document.getElementById("matrix");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const katakana =
+        "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン";
+      const latin = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const nums = "0123456789";
+
+      const characters = (katakana + latin + nums).split("");
+
+      const fontSize = 16;
+      const columns = canvas.width / fontSize;
+      const drops = [];
+      let currentColor = "#FF4444";
+      let colorInterval;
+
+      function toggleColor() {
+        currentColor = currentColor === "#FF4444" ? "#0F0" : "#FF4444";
+        clearInterval(colorInterval);
+        const randomTime =
+          Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
+        colorInterval = setInterval(toggleColor, randomTime);
+      }
+
+      // Initial call with random time
+      const initialTime = Math.floor(Math.random() * (10000 - 3000 + 1)) + 3000;
+      colorInterval = setInterval(toggleColor, initialTime);
+
+      for (let x = 0; x < columns; x++) {
+        drops[x] = 1;
+      }
+
+      function draw() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = currentColor;
+        ctx.font = `${fontSize}px monospace`;
+
+        for (let i = 0; i < drops.length; i++) {
+          const text =
+            characters[Math.floor(Math.random() * characters.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+
+          drops[i]++;
+        }
+      }
+
+      setInterval(draw, 33);
+
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    </script>
+  </body>
+</html>
