@@ -1,0 +1,8 @@
+FROM debian
+
+RUN apt update && \
+    apt install -y openssh-server nano
+
+RUN mkdir run/sshd
+
+CMD ["/usr/sbin/sshd", "-D"]
